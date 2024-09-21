@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitchen Light Control</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        margin-bottom: 50px;
+      }
+
+      .light-status {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+
+      .bulb {
+        width: 60px;
+        height: 120px;
+        background-color: #ccc;
+        border-radius: 30px 30px 0 0;
+        position: relative;
+        margin-bottom: 20px;
+        box-shadow: 0 0 20px rgb(173, 173, 173);
+        transition: background-color 0.3s ease;
+      }
+
+      .bulb:before {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        width: 40px;
+        height: 20px;
+        background-color: #ddddf5;
+        border-radius: 20px;
+        transform: translateX(-50%);
+      }
+
+      .bulb.on {
+        background-color: rgb(255, 255, 0);
+        box-shadow: 0 0 30px rgb(255, 255, 0);
+      }
+
+      button {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 10px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      button.off {
+        background-color: #ffbb00;
+      }
+      button.block {
+        background-color: #e93434;
+      }
+
+      button.off:hover {
+        background-color: #e0a500;
+      }
+
+      .log {
+        margin-top: 20px;
+        padding: 15px;
+        width: 400px;
+        background-color: #eee;
+        border-radius: 8px;
+        font-family: monospace;
+      }
+
+      .log div {
+        margin: 5px 0;
+      }
+
+      .buttons-flex1 {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .buttons-flex2 {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .big-flex {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Kitchen Light Control</h1>
+    <div class="bulb" id="bulb"></div>
+    <div class="light-status">Light is off</div>
+    <div class="big-flex">
+      <div class="buttons-flex1">
+        <button id="sensor-on-btn">Turn On Light (Sensor)</button>
+        <button id="sensor-off-btn" class="off">Turn Off Light (Sensor)</button>
+      </div>
+      <div class="buttons-flex2">
+        <button id="voice-on-btn">Turn On Light (Alice)</button>
+        <button id="voice-off-btn" class="off">Turn Off Light (Alice)</button>
+      </div>
+    </div>
+
+    <div class="log">
+      <div id="sensor-log">Sensor Status: Off</div>
+      <div id="voice-log">Alice Status: Off</div>
+    </div>
+
+    <script>
+      const bulb = document.getElementById("bulb");
+      const lightStatus = document.querySelector(".light-status");
+      const sensorOnBtn = document.getElementById("sensor-on-btn");
+      const sensorOffBtn = document.getElementById("sensor-off-btn");
+      const voiceOnBtn = document.getElementById("voice-on-btn");
+      const voiceOffBtn = document.getElementById("voice-off-btn");
+      const sensorLog = document.getElementById("sensor-log");
+      const voiceLog = document.getElementById("voice-log");
+
+      function updateLightState(state, source) {
+        if (state === "on") {
+          bulb.classList.add("on");
+          lightStatus.textContent = `Light is On (${source})`;
+        } else {
+          bulb.classList.remove("on");
+          lightStatus.textContent = "Light is Off";
+        }
+      }
+
+      sensorOnBtn.onclick = () => {
+        if (bulb.classList.contains("on")) {
+          sensorOnBtn.style.backgroundColor = "red";
+          sensorOnBtn.style.cursor = "not-allowed";
+        }
+        updateLightState("on", "sensor");
+        sensorLog.textContent = "Sensor Status: On";
+      };
+
+      sensorOffBtn.onclick = () => {
+        updateLightState("off");
+        sensorLog.textContent = "Sensor Status: Off";
+        voiceLog.textContent = "Alice Status: Off";
+        sensorOnBtn.style.backgroundColor = "#4caf50";
+        sensorOnBtn.style.cursor = "pointer";
+      };
+
+      voiceOnBtn.onclick = () => {
+        if (bulb.classList.contains("on")) {
+          alert("Light is already on");
+          return;
+        } else {
+          updateLightState("on", "Alice");
+          voiceLog.textContent = "Alice Status: On";
+        }
+      };
+
+      voiceOffBtn.onclick = () => {
+        updateLightState("off");
+        voiceLog.textContent = "Alice Status: Off";
+        sensorLog.textContent = "Sensor Status: Off";
+        sensorOnBtn.style.backgroundColor = "#4caf50";
+        sensorOnBtn.style.cursor = "pointer";
+      };
+    </script>
+  </body>
+</html>
